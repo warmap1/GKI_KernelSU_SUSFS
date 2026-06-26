@@ -9,7 +9,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Download Wild KSU
+    - name: Download ReSukiSU
       shell: bash
       working-directory: ${{ github.workspace }}/kernel
       run: |
