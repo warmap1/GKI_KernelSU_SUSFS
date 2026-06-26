@@ -29,7 +29,7 @@ runs:
           git -C KernelSU/kernel checkout "origin/$KSU_INPUT"
         else
           echo "Using ReSukiSU commit: $KSU_INPUT"
-          url -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh" | bash -s dev-susfs
+          curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh" | bash -s dev-susfs
           git -C KernelSU/kernel fetch --depth=50 origin "$KSU_INPUT"
           git -C KernelSU/kernel checkout "$KSU_INPUT"
         fi
