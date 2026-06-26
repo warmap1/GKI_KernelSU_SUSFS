@@ -130,7 +130,7 @@ jobs:
         sublevel: ${{ steps.extract.outputs.sublevel }}
         os_patch_level: ${{ inputs.os_patch_level }}
 
-    - name: Setup KernelSU-Next
+    - name: Setup ReSukiSU
       if: contains(inputs.feature_set, 'KSUN') || inputs.feature_set == 'FULL'
       uses: ./.github/actions/kernelsu
       with:
