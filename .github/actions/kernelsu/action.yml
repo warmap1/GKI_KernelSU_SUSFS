@@ -18,7 +18,7 @@ runs:
         KSU_REPO="https://github.com/ReSukiSU/ReSukiSU.git"
         KSU_INPUT="${{ inputs.ksu_branch }}"
         if [ -z "$KSU_INPUT" ]; then
-          KSU_INPUT="dev-susfs"
+          KSU_INPUT="dev"
         fi
 
         # Try as branch first, fall back to commit
