@@ -1,5 +1,5 @@
-name: Setup Wild KSU
-description: Download and configure Wild KSU with version tracking
+name: Setup ReSukiSU
+description: Download and configure ReSukiSU with version tracking
 inputs:
   ksu_branch:
     description: 'KernelSU branch or commit (empty = latest dev-susfs branch tip)'
@@ -9,7 +9,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Download Wild KSU
+    - name: Download ReSukiSU
       shell: bash
       working-directory: ${{ github.workspace }}/kernel
       run: |
@@ -28,26 +28,26 @@ runs:
           return 1
         }
 
-        KSU_REPO="https://github.com/pershoot/KernelSU-Next.git"
+        KSU_REPO="https://github.com/ReSukiSU/ReSukiSU.git"
         KSU_INPUT="${{ inputs.ksu_branch }}"
         if [ -z "$KSU_INPUT" ]; then
-          KSU_INPUT="dev-susfs"
+          KSU_INPUT="main"
         fi
 
         # Try as branch first, fall back to commit
         if retry git ls-remote --heads "$KSU_REPO" "$KSU_INPUT" | grep -q .; then
-          echo "Using KernelSU-Next branch: $KSU_INPUT"
-          curl -LSs --retry 5 --retry-delay 5 --retry-all-errors "https://raw.githubusercontent.com/pershoot/KernelSU-Next/dev-susfs/kernel/setup.sh" | bash -s dev-susfs
-          retry git -C KernelSU-Next/kernel fetch --depth=50 origin "$KSU_INPUT"
-          git -C KernelSU-Next/kernel checkout "origin/$KSU_INPUT"
+          echo "Using ReSukiSU branch: $KSU_INPUT"
+          curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh" | bash -s "$KSU_INPUT"
+          retry git -C KernelSU/kernel fetch --depth=50 origin "$KSU_INPUT"
+          git -C KernelSU/kernel checkout "origin/$KSU_INPUT"
         else
-          echo "Using KernelSU-Next commit: $KSU_INPUT"
-          curl -LSs --retry 5 --retry-delay 5 --retry-all-errors "https://raw.githubusercontent.com/pershoot/KernelSU-Next/dev-susfs/kernel/setup.sh" | bash -s dev-susfs
-          retry git -C KernelSU-Next/kernel fetch --depth=50 origin "$KSU_INPUT"
-          git -C KernelSU-Next/kernel checkout "$KSU_INPUT"
+          echo "Using ReSukiSU commit: $KSU_INPUT"
+          curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh" | bash -s "$KSU_INPUT"
+          retry git -C KernelSU/kernel fetch --depth=50 origin "$KSU_INPUT"
+          git -C KernelSU/kernel checkout "$KSU_INPUT"
         fi
 
-        cd KernelSU-Next/kernel
+        cd KernelSU/kernel
 
         # Anchor the version to the upstream sync point (merge-base with
         # origin/<base-branch>) exactly like the official manager's
@@ -81,14 +81,6 @@ runs:
         echo "KSU_GIT_TAG=$KSU_GIT_TAG" >> $GITHUB_ENV
         echo "KSU_VERSION=$KSU_VERSION" >> $GITHUB_ENV
         echo "KSU_COMMIT=$KSU_COMMIT" >> $GITHUB_ENV
-
-    - name: 'Fix KernelSU-Next'
-      shell: bash
-      working-directory: ${{ github.workspace }}/kernel/KernelSU-Next
-      run: |
-        set -euo pipefail
-        cp ${{ github.action_path }}/patches/static.patch "${{ github.workspace }}/kernel/KernelSU-Next/static.patch"
-        patch -p1 < static.patch
 
     - name: Enable Kernel Configs
       uses: ./.github/actions/set-kernel-config
