@@ -67,7 +67,7 @@ runs:
     - name: Extract KSU Version Info
       id: ksu-version
       shell: bash
-      working-directory: ${{ github.workspace }}/kernel/KernelSU-Next
+      working-directory: ${{ github.workspace }}/kernel/KernelSU
       run: |
         # Get the base branch name by stripping suffixes (e.g., dev-susfs -> dev)
         BASE_BRANCH=$(git rev-parse --abbrev-ref HEAD | sed 's:-.*::' 2>/dev/null)
